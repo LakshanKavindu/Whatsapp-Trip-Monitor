@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Trip Alerts</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0f1115" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🚖 Trip Alerts</h1>
+    <div id="statusDot" class="status-dot" title="Connecting..."></div>
+  </header>
+
+  <nav class="main-nav" aria-label="Main navigation">
+    <button type="button" class="nav-btn active" data-view="latestView">Latest 15</button>
+    <button type="button" class="nav-btn" data-view="filtersView">Filters</button>
+  </nav>
+
+  <main>
+    <section id="latestView" class="view active-view">
+      <div id="list" class="list"></div>
+      <p id="emptyMsg" class="empty">Waiting for matching trips...</p>
+    </section>
+
+    <section id="filtersView" class="view filters-view">
+      <form id="pwaFilterForm" class="filter-form">
+        <h2>Add Filter</h2>
+        <label>Pickup<input id="filterPickup" type="text" placeholder="e.g. Ella" /></label>
+        <label>Drop<input id="filterDrop" type="text" placeholder="e.g. Colombo" /></label>
+        <label>Vehicle<input id="filterVehicle" type="text" placeholder="e.g. sedan" /></label>
+        <button type="submit">Add filter</button>
+      </form>
+      <div class="filter-panel">
+        <h2>Saved Filters</h2>
+        <div id="pwaFilterList"></div>
+        <p id="filterEmpty" class="empty">No filters saved yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Tap-to-enable-sound banner: mobile browsers block audio until the
+       user interacts with the page at least once. -->
+  <button type="button" id="enableSound" class="enable-sound-btn" onclick="window.startAlertSetup()">🔔 Enable sound and background alerts</button>
+  <button type="button" id="testSound" class="test-sound-btn" onclick="window.enableTripAlertSound()">Test sound</button>
+  <p id="pushStatus" class="push-status" aria-live="polite"></p>
+
+  <audio id="alertSound" preload="auto">
+    <source src="alert.wav" type="audio/wav" />
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
+  <script src="config.js?v=7"></script>
+  <script src="firebase-config.js?v=7"></script>
+  <script>
+    window.startAlertSetup = async function () {
+      const status = document.getElementById("pushStatus");
+      const button = document.getElementById("enableSound");
+      try {
+        status.textContent = "Starting notification setup...";
+        if (window.enableTripAlertSound) window.enableTripAlertSound();
+        if (!window.isSecureContext) throw new Error("Open the HTTPS Netlify URL.");
+        if (!window.Notification) throw new Error("This browser does not support notifications.");
+        const permission = Notification.permission === "granted"
+          ? "granted"
+          : await Notification.requestPermission();
+        if (permission !== "granted") throw new Error("Notification permission was not allowed.");
+        const registration = await navigator.serviceWorker.register("service-worker.js?v=7");
+        await navigator.serviceWorker.ready;
+        if (!window.firebase || !window.FIREBASE_CONFIG) throw new Error("Firebase configuration did not load.");
+        if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+        const token = await firebase.messaging().getToken({
+          vapidKey: window.FIREBASE_CONFIG.vapidKey,
+          serviceWorkerRegistration: registration,
+        });
+        if (!token) throw new Error("Firebase did not provide a phone token.");
+        const client = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+        const result = await client.rpc("register_push_token", { p_token: token });
+        if (result.error) throw new Error(result.error.message);
+        status.textContent = "";
+        button.classList.add("hidden");
+        localStorage.setItem("tripAlertsEnabled", "true");
+      } catch (error) {
+        status.textContent = `Background alerts failed: ${error.message}`;
+      }
+    };
+  </script>
+  <script src="app.js?v=7"></script>
+</body>
+</html>
