@@ -17,6 +17,7 @@
   <nav class="main-nav" aria-label="Main navigation">
     <button type="button" class="nav-btn active" data-view="latestView">Latest 15</button>
     <button type="button" class="nav-btn" data-view="filtersView">Filters</button>
+    <button type="button" id="soundToggle" class="nav-btn sound-off">Sound: OFF</button>
   </nav>
 
   <main>
@@ -43,8 +44,7 @@
 
   <!-- Tap-to-enable-sound banner: mobile browsers block audio until the
        user interacts with the page at least once. -->
-  <button type="button" id="enableSound" class="enable-sound-btn" onclick="window.startAlertSetup()">🔔 Enable sound and background alerts</button>
-  <button type="button" id="testSound" class="test-sound-btn" onclick="window.enableTripAlertSound()">Test sound</button>
+  <button type="button" id="enableSound" class="enable-sound-btn" onclick="window.startAlertSetup()">🔔 Enable background alerts</button>
   <p id="pushStatus" class="push-status" aria-live="polite"></p>
 
   <audio id="alertSound" preload="auto">
@@ -62,7 +62,7 @@
       const button = document.getElementById("enableSound");
       try {
         status.textContent = "Starting notification setup...";
-        if (window.enableTripAlertSound) window.enableTripAlertSound();
+        if (window.enableTripAlertSound) window.enableTripAlertSound(false);
         if (!window.isSecureContext) throw new Error("Open the HTTPS Netlify URL.");
         if (!window.Notification) throw new Error("This browser does not support notifications.");
         const permission = Notification.permission === "granted"

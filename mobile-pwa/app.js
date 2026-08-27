@@ -4,6 +4,7 @@ const statusDot = document.getElementById("statusDot");
 const enableSoundBtn = document.getElementById("enableSound");
 const alertSound = document.getElementById("alertSound");
 const pushStatus = document.getElementById("pushStatus");
+const soundToggle = document.getElementById("soundToggle");
 const pwaFilterForm = document.getElementById("pwaFilterForm");
 const pwaFilterList = document.getElementById("pwaFilterList");
 const filterEmpty = document.getElementById("filterEmpty");
@@ -53,7 +54,7 @@ if (localStorage.getItem("tripAlertsEnabled") === "true" || Notification.permiss
   enableSoundBtn.classList.add("hidden");
 }
 
-window.enableTripAlertSound = () => {
+window.enableTripAlertSound = (playPreview = true) => {
   alertSound.loop = true;
   alertSound.currentTime = 0;
   alertSound.play().then(() => {
@@ -61,9 +62,14 @@ window.enableTripAlertSound = () => {
     alertSound.currentTime = 0;
     soundEnabled = true;
     window.soundEnabled = true;
-    playAlertSound();
+    soundToggle.textContent = "Sound: ON";
+    soundToggle.classList.remove("sound-off");
+    soundToggle.classList.add("sound-on");
+    if (playPreview) playAlertSound();
   }).catch(() => {});
 };
+
+soundToggle.addEventListener("click", () => window.enableTripAlertSound());
 
 window.playTripAlertSound = () => {
   if (!soundEnabled) window.enableTripAlertSound();

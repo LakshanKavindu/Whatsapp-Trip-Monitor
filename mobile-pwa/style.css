@@ -133,18 +133,8 @@ header h1 { margin: 0; font-size: 20px; }
 }
 .enable-sound-btn.hidden { display: none; }
 
-.test-sound-btn {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--card);
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 700;
-}
+.nav-btn.sound-off { color: var(--muted); }
+.nav-btn.sound-on { color: #bdf5da; border-color: var(--accent-dim); background: var(--accent-dim); }
 
 .push-status {
   position: fixed;
