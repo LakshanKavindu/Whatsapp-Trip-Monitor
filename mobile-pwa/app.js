@@ -37,7 +37,7 @@ window.addEventListener("unhandledrejection", (event) => {
 
 let soundEnabled = window.soundEnabled === true;
 let serviceWorkerRegistration = null;
-let audioContext = null;
+let soundStopTimer = null;
 const serviceWorkerReady = "serviceWorker" in navigator
   ? navigator.serviceWorker.getRegistrations()
       .then((registrations) => Promise.all(
@@ -53,8 +53,11 @@ if (localStorage.getItem("tripAlertsEnabled") === "true" || Notification.permiss
 }
 
 window.enableTripAlertSound = () => {
-  audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  audioContext.resume().then(() => {
+  alertSound.loop = true;
+  alertSound.currentTime = 0;
+  alertSound.play().then(() => {
+    alertSound.pause();
+    alertSound.currentTime = 0;
     soundEnabled = true;
     window.soundEnabled = true;
     playAlertSound();
@@ -336,21 +339,14 @@ pwaFilterForm.addEventListener("submit", async (event) => {
 
 function playAlertSound() {
   if (!soundEnabled) return;
-  if (!audioContext) return;
-
-  const now = audioContext.currentTime;
-  [0, 0.16].forEach((offset, index) => {
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    oscillator.type = "sine";
-    oscillator.frequency.value = index === 0 ? 880 : 1175;
-    gain.gain.setValueAtTime(0.0001, now + offset);
-    gain.gain.exponentialRampToValueAtTime(0.25, now + offset + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.14);
-    oscillator.connect(gain).connect(audioContext.destination);
-    oscillator.start(now + offset);
-    oscillator.stop(now + offset + 0.15);
-  });
+  alertSound.loop = true;
+  alertSound.currentTime = 0;
+  alertSound.play().catch(() => {});
+  clearTimeout(soundStopTimer);
+  soundStopTimer = setTimeout(() => {
+    alertSound.pause();
+    alertSound.currentTime = 0;
+  }, 2000);
 }
 
 function subscribeRealtime() {
