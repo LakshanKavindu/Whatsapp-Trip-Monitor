@@ -11,6 +11,7 @@ const filterEmpty = document.getElementById("filterEmpty");
 const latestWindowMs = 10 * 60 * 1000;
 
 document.querySelectorAll(".nav-btn").forEach((button) => {
+  if (!button.dataset.view) return;
   button.addEventListener("click", () => {
     document.querySelectorAll(".nav-btn").forEach((item) => item.classList.remove("active"));
     document.querySelectorAll(".view").forEach((view) => view.classList.remove("active-view"));
