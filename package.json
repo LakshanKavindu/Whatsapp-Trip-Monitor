@@ -1,0 +1,24 @@
+{
+  "name": "whatsapp-trip-monitor",
+  "version": "3.0.0",
+  "description": "Watches for matching hire messages (Windows notifications today, WhatsApp directly via Baileys later), notifies you locally, and syncs to Supabase for the driver's mobile PWA + future analytics.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "test:parser": "node test-parser.js",
+    "test:matcher": "node test-matcher.js",
+    "start:baileys": "node index.js"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "@whiskeysockets/baileys": "^6.7.9",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^14.3.0",
+    "node-notifier": "^10.0.1",
+    "pino": "^9.4.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

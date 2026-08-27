@@ -1,0 +1,47 @@
+[
+  {
+    "id": "mt8bgnxx45j5",
+    "label": "NuwaraEliya  → Anywhere",
+    "pickup": "NuwaraEliya",
+    "drop": "",
+    "vehicle": "",
+    "enabled": true,
+    "createdAt": "2026-08-25T07:01:20.565Z"
+  },
+  {
+    "id": "mt8bgre99ywd",
+    "label": "ella  → Anywhere",
+    "pickup": "ella",
+    "drop": "",
+    "vehicle": "",
+    "enabled": true,
+    "createdAt": "2026-08-25T07:01:25.041Z"
+  },
+  {
+    "id": "mtad7zgg7vt7",
+    "label": "kandy → Anywhere",
+    "pickup": "kandy",
+    "drop": "",
+    "vehicle": "",
+    "enabled": true,
+    "createdAt": "2026-08-26T17:26:07.168Z"
+  },
+  {
+    "id": "mtaeuudr0wbl",
+    "label": "Arugambay → Anywhere",
+    "pickup": "Arugambay",
+    "drop": "",
+    "vehicle": "",
+    "enabled": true,
+    "createdAt": "2026-08-26T18:11:53.295Z"
+  },
+  {
+    "id": "mtay77foga90",
+    "label": "BIA → Anywhere",
+    "pickup": "BIA",
+    "drop": "",
+    "vehicle": "",
+    "enabled": true,
+    "createdAt": "2026-08-27T03:13:22.788Z"
+  }
+]

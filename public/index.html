@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trip Monitor</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🚖 Trip Monitor</h1>
+      <p class="sub">Watching for matching hire messages. Add routes below — leave Drop blank to match "from X to anywhere".</p>
+    </header>
+
+    <div class="layout">
+      <div class="col-left">
+        <section class="card">
+          <h2>Add a route filter</h2>
+          <form id="filterForm">
+            <div class="row">
+              <div class="field">
+                <label>Pickup</label>
+                <input type="text" id="fPickup" placeholder="e.g. Arugambay (blank = anywhere)" />
+              </div>
+              <div class="field">
+                <label>Drop</label>
+                <input type="text" id="fDrop" placeholder="e.g. Galle (blank = anywhere)" />
+              </div>
+              <div class="field">
+                <label>Vehicle</label>
+                <input type="text" id="fVehicle" placeholder="e.g. sedan (blank = any)" />
+              </div>
+              <div class="field field-btn">
+                <button type="submit">Add filter</button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Active filters</h2>
+          <div id="filterList" class="filter-list"></div>
+          <p class="empty" id="filterEmpty" style="display:none;">No filters yet — add one above. With none active, nothing will notify.</p>
+        </section>
+
+        <section class="card">
+          <h2>Test a message</h2>
+          <p class="sub">Paste any message here to check parsing and matching — works right now, no notification listener needed.</p>
+          <textarea id="testMessage" rows="6" placeholder="Paste a sample hire message here..."></textarea>
+          <button id="testSend" type="button" style="margin-top:10px;">Send test message</button>
+        </section>
+      </div>
+
+      <div class="col-right">
+        <section class="card feed-card">
+          <h2><span class="dot dot-match"></span> Match results</h2>
+          <p class="sub">Messages that matched one of your active filters.</p>
+          <div id="matchFeed" class="feed"></div>
+        </section>
+
+        <section class="card feed-card">
+          <h2><span class="dot dot-all"></span> Live feed</h2>
+          <p class="sub">Everything received, matched or not, most recent first.</p>
+          <div id="feed" class="feed"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

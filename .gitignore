@@ -1,0 +1,23 @@
+node_modules/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*service-account*.json
+firebase-adminsdk-*.json
+*firebase-adminsdk*.json
+
+# WhatsApp/Baileys local authentication state
+auth_state/
+
+# Build output and local tooling files
+notification-listener/bin/
+notification-listener/obj/
+*.log
+.vscode/
+.idea/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
