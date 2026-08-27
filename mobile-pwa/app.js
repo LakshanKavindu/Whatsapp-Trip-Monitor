@@ -7,6 +7,7 @@ const pushStatus = document.getElementById("pushStatus");
 const pwaFilterForm = document.getElementById("pwaFilterForm");
 const pwaFilterList = document.getElementById("pwaFilterList");
 const filterEmpty = document.getElementById("filterEmpty");
+const latestWindowMs = 10 * 60 * 1000;
 
 document.querySelectorAll(".nav-btn").forEach((button) => {
   button.addEventListener("click", () => {
@@ -171,6 +172,7 @@ function toWhatsAppLink(rawContact) {
 function buildCard(row) {
   const div = document.createElement("div");
   div.className = "trip-card";
+  div.dataset.createdAt = String(new Date(row.created_at).getTime());
 
   const time = new Date(row.created_at).toLocaleTimeString();
   const pickup = row.pickup ? escapeHtml(row.pickup) : "Anywhere";
@@ -202,6 +204,7 @@ function buildCard(row) {
 }
 
 function prependRow(row) {
+  if (!row.created_at || Date.now() - new Date(row.created_at).getTime() > latestWindowMs) return;
   emptyMsg.style.display = "none";
   listEl.insertBefore(buildCard(row), listEl.firstChild);
 
@@ -219,6 +222,7 @@ async function loadRecent() {
     .from("messages")
     .select("*")
     .eq("matched", true)
+    .gte("created_at", new Date(Date.now() - latestWindowMs).toISOString())
     .order("created_at", { ascending: false })
     .limit(15);
 
@@ -234,6 +238,7 @@ async function loadRecent() {
 
   emptyMsg.style.display = "none";
   data.forEach((row, index) => {
+    if (Date.now() - new Date(row.created_at).getTime() > latestWindowMs) return;
     try {
       listEl.appendChild(buildCard(row));
     } catch (error) {
@@ -241,6 +246,14 @@ async function loadRecent() {
       pushStatus.textContent = `[trips] render failed for row ${index}: ${error.message}`;
     }
   });
+}
+
+function removeExpiredLatestTrips() {
+  const cutoff = Date.now() - latestWindowMs;
+  listEl.querySelectorAll(".trip-card").forEach((card) => {
+    if (Number(card.dataset.createdAt) < cutoff) card.remove();
+  });
+  if (listEl.children.length === 0) emptyMsg.style.display = "block";
 }
 
 function renderPwaFilters(filters) {
@@ -387,6 +400,7 @@ function subscribeForegroundPush() {
 loadRecent();
 loadPwaFilters();
 subscribeFilterChanges();
+setInterval(removeExpiredLatestTrips, 30 * 1000);
 subscribeRealtime();
 subscribeForegroundPush();
 
